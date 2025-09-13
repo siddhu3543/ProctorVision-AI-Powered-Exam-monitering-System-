@@ -1,0 +1,7 @@
+flask
+flask-socketio
+opencv-python
+mediapipe
+torch
+ultralytics
+eventlet
