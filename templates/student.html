@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Exam Dashboard</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    header {
+      width: 100%;
+      background: linear-gradient(90deg, #2c3e50, #3498db);
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+
+    .quiz-box {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      width: 65%;
+      max-width: 800px;
+      transition: transform 0.3s ease;
+    }
+
+    .quiz-box:hover {
+      transform: translateY(-5px);
+    }
+
+    .question {
+      font-size: 22px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 25px;
+      border-left: 4px solid #3498db;
+      padding-left: 15px;
+    }
+
+    .options label {
+      display: block;
+      background: #f8f9fa;
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin: 12px 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .options label:hover {
+      background: #e3f2fd;
+      border-color: #3498db;
+      transform: translateX(5px);
+    }
+
+    .options input[type="radio"]:checked + label {
+      background: #3498db;
+      color: white;
+    }
+
+    button {
+      background: linear-gradient(90deg, #3498db, #2980b9);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 25px;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    #video {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      width: 250px;
+      border-radius: 15px;
+      border: 3px solid #3498db;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      transition: all 0.3s ease;
+    }
+
+    #video:hover {
+      transform: scale(1.05);
+    }
+
+    #popup {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      display: none;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      z-index: 9999;
+      min-width: 300px;
+      text-align: center;
+      animation: slideDown 0.5s ease;
+    }
+
+    @keyframes slideDown {
+      from { transform: translate(-50%, -100%); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
+    }
+
+    #endExamBtn {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      background: linear-gradient(90deg, #e74c3c, #c0392b);
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(231, 76, 60, 0.3);
+    }
+
+    #endExamBtn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .quiz-box {
+        width: 90%;
+        padding: 25px;
+      }
+
+      #video {
+        width: 180px;
+        top: 20px;
+        right: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>Online Examination Portal</header>
+
+  <main>
+    <div class="quiz-box">
+      <div class="question">Q1. Which of the following is not a Python data type?</div>
+      <div class="options">
+        <label><input type="radio" name="q1"> List</label>
+        <label><input type="radio" name="q1"> Tuple</label>
+        <label><input type="radio" name="q1"> Integer</label>
+        <label><input type="radio" name="q1"> Pointer</label>
+      </div>
+
+      <div class="question">Q2. What does HTML stand for?</div>
+      <div class="options">
+        <label><input type="radio" name="q2"> Hyper Text Markup Language</label>
+        <label><input type="radio" name="q2"> High Transfer Meta Link</label>
+        <label><input type="radio" name="q2"> Hyper Tool Multi Language</label>
+        <label><input type="radio" name="q2"> None of the above</label>
+      </div>
+
+      <div class="question">Q3. why kattapa killed bahubali?</div>
+      <div class="options">
+        <label><input type="radio" name="q2"> Due to shivagami</label>
+        <label><input type="radio" name="q2"> Due to Rana</label>
+        <label><input type="radio" name="q2"> Due to Rajamouli</label>
+        <label><input type="radio" name="q2"> None of the above</label>
+      </div>
+      <div class="question">Q4. What does NBk stand for?</div>
+      <div class="options">
+        <label><input type="radio" name="q2"> national bowling kings</label>
+        <label><input type="radio" name="q2"> national basket ball</label>
+        <label><input type="radio" name="q2"> nandhamuri bala Krishna</label>
+        <label><input type="radio" name="q2"> None of the above</label>
+      </div>
+      <button onclick="alert('Your answers have been submitted!')">Submit Answers</button>
+    </div>
+  </main>
+
+  <img id="video" src="/video_feed" alt="Student Camera Feed">
+
+  <div id="popup"></div>
+
+  <form action="/end_exam" method="post">
+    <button id="endExamBtn" type="submit">End Exam</button>
+  </form>
+
+  <script>
+    // Simple Socket.IO connection
+    const socket = io();
+    const popup = document.getElementById("popup");
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
+    function showPopup(data) {
+      console.log("Showing popup:", data);  // Debug
+      popup.textContent = data.message;
+      popup.style.display = "block";
+      
+      // Hide after 3 seconds
+      setTimeout(() => {
+        popup.style.display = "none";
+      }, 3000);
+    }
+
+    socket.on("alert", (data) => {
+      console.log("Alert received:", data);  // Debug
+      showPopup(data);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Exam Rules & Regulations</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f2f2;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 600px;
+      text-align: center;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    h1 {
+      color: #007bff;
+    }
+
+    ul {
+      text-align: left;
+      margin: 20px 0;
+      line-height: 1.6;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:disabled {
+      background: gray;
+      cursor: not-allowed;
+    }
+
+    .success {
+      background-color: #e8f5e9;
+      border: 1px solid #4caf50;
+      color: #2e7d32;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Success message area -->
+    {% if success %}
+      <div class="success">✅ Test successfully completed.</div>
+    {% endif %}
+
+    <h1>Exam Rules & Regulations</h1>
+    <ul>
+      <li>Keep your camera on throughout the exam.</li>
+      <li>Do not use mobile phones or other devices.</li>
+      <li>Avoid looking away from the screen frequently.</li>
+      <li>Any suspicious activity will be flagged automatically.</li>
+    </ul>
+
+    <form action="/start_exam" method="post">
+      <input type="checkbox" id="agree" onchange="toggleButton()"> I agree to the terms & conditions
+      <br><br>
+      <button id="startBtn" type="submit" disabled>Start Exam</button>
+    </form>
+  </div>
+
+  <script>
+    function toggleButton() {
+      const agree = document.getElementById("agree").checked;
+      document.getElementById("startBtn").disabled = !agree;
+    }
+  </script>
+</body>
+</html>

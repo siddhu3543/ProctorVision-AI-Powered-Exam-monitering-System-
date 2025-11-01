@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Monitoring AI - Student</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f4f4f9;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #video-container {
+            position: relative;
+            overflow: hidden;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+        #video-feed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #popup {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 9999;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .popup-phone {
+            background: rgba(220, 53, 69, 0.95);
+            color: white;
+        }
+
+        .popup-face {
+            background: rgba(255, 153, 0, 0.95);
+            color: white;
+        }
+
+        .popup-gaze {
+            background: rgba(0, 123, 255, 0.95);
+            color: white;
+        }
+
+        .popup-show {
+            display: block !important;
+            animation: none !important;
+            opacity: 1 !important;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Exam Monitoring AI</h1>
+    <div id="video-container">
+        <img id="video-feed" src="{{ url_for('video_feed') }}" alt="Video Feed">
+    </div>
+    <div id="popup"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+<script>
+        // Initialize Socket.IO with explicit URL
+        const socket = io('http://localhost:5000', {
+            transports: ['websocket'],
+            upgrade: false
+        });
+
+        const popup = document.getElementById("popup");
+        let popupTimeout;
+
+        // Socket connection handling
+        socket.on('connect', () => {
+            console.log('Connected to server');
+        });
+
+        socket.on('connect_error', (error) => {
+            console.error('Connection error:', error);
+        });
+
+        function showPopup(data) {
+            console.log('Showing popup:', data);  // Debug log
+            
+            // Clear existing popup
+            if (popupTimeout) {
+                clearTimeout(popupTimeout);
+            }
+            
+            // Remove existing classes
+            popup.className = '';
+            popup.classList.add('popup');
+            
+            // Add type-specific class
+            popup.classList.add(`popup-${data.type}`);
+            
+            // Set content and show
+            popup.textContent = data.message;
+            popup.classList.add('popup-show');
+            
+            // Set timeout to hide
+            popupTimeout = setTimeout(() => {
+                popup.classList.remove('popup-show');
+            }, 3000);
+        }
+
+        // Alert handler
+        socket.on("alert", (data) => {
+            console.log('Alert received:', data);  // Debug log
+            showPopup(data);
+        });
+    </script>
+
+</body>
+</html>
