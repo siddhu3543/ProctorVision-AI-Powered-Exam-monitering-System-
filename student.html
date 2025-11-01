@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -145,3 +146,67 @@
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Exam</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; }
+    img { width: 600px; border: 3px solid #333; border-radius: 10px; margin-top: 20px; }
+
+    /* Popup in the TOP MIDDLE */
+    #popup {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(220, 20, 60, 0.95); /* Crimson */
+      color: white;
+      padding: 15px 25px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      display: none;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
+      animation: fadeInOut 3s ease forwards;
+    }
+
+    /* Smooth popup animation */
+    @keyframes fadeInOut {
+      0%   { opacity: 0; transform: translate(-50%, -30px); }
+      10%  { opacity: 1; transform: translate(-50%, 0px); }
+      90%  { opacity: 1; transform: translate(-50%, 0px); }
+      100% { opacity: 0; transform: translate(-50%, -30px); }
+    }
+  </style>
+</head>
+<body>
+  <h1>Student Exam Monitoring</h1>
+  <img id="video" src="/video_feed">
+  <div id="popup"></div>
+
+  <script>
+    const socket = io();
+    const popup = document.getElementById("popup");
+
+    function showPopup(message) {
+      popup.innerText = message;
+      popup.style.display = "block";
+
+      // restart animation
+      popup.style.animation = "none";
+      popup.offsetHeight; // force reflow
+      popup.style.animation = null;
+
+      setTimeout(() => popup.style.display = "none", 3000);
+    }
+
+    socket.on("alert", (data) => {
+      showPopup(data.message);
+    });
+  </script>
+</body>
+</html>
+>>>>>>> 3a36a026638dac90c29c6e3cc068d494f5a109ed
